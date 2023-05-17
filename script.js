@@ -19,25 +19,35 @@ if (!storage) {
 }
 
 for (var i = 0; i < saveBtn.length; i++) {
-  $(saveBtn[i]).on("click", function () {
-    var textField = $(this).parent().children(".description");
-    var textInput = textField.val();
-    storage = storage.map((element) => {
-      if (element.hour == $(this).parent().attr("id")) {
-        element.text = textInput;
-      }
-      return element;
-    });
-    var newBlock = {
-      hour: $(this).parent().attr("id").toString(),
-      text: textInput,
-    }
-    if (newBlock in storage) {
-      console.log("GO AWAY");
-    } else {
 
-      storage.push(newBlock);
+
+  $(saveBtn[i]).on("click", function () {
+    const description =  $(this).parent().children(".description").val();
+    const hourOfEntry = $(this).parent().attr("id").toString()
+    //console.log(hourOfEntry)
+
+    console.log(description)
+
+    // is this a new entry or an updated entry
+    const isNewEntry = !storage.find( block => block.hour == hourOfEntry)
+    console.log("Is new entry: ", isNewEntry);
+
+    if( isNewEntry ){
+      // push the new data into the storage array
+      storage.push({
+        hour: hourOfEntry.toString(),
+        text: description
+      })
+    } else {
+      storage = storage.map((element) => {
+        if (element.hour == hourOfEntry ) {
+          element.text = description;
+        }
+        return element;
+      });
     }
+
+    console.log(storage)
 
     localStorage.setItem("savedData", JSON.stringify(storage));
     // textField.value = localStorage.getItem("savedData");
